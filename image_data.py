@@ -154,5 +154,19 @@ class ImageManager:
          cv2.rectangle(displayed_image,(0,0),(self.dim_h-1,self.dim_v-1),(255,255,0),3) 
    
             
-            
+    def merge_channels(self, ch0, ch1, norm_factor=[1,1]):
+        """ Input: 
+        ch1, ch2: selected channels to merge
+            Output:
+        merged_image: RGB image with the two channels merged in red and green
+        """          
+        im0 = self.image[ch0]
+        im1 = self.image[ch1]
+        
+        im1_8bit = (im0/norm_factor[0]).astype('uint8')
+        im2_8bit = (im1/norm_factor[1]).astype('uint8')
+        
+        merged_image = cv2.merge((im1_8bit,im2_8bit,np.zeros_like(im1_8bit)))
+        
+        return merged_image        
         

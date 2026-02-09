@@ -13,6 +13,9 @@ import os, time
 from pyqtgraph.Qt import QtWidgets
 from image_data import ImageManager
 
+
+VIEWS = {'A':0, 'B':1, 'Merged':100}
+
 class IfcMeasure(Measurement):
  
     name = "IFC_measurement"
@@ -65,6 +68,8 @@ class IfcMeasure(Measurement):
         self.settings.New('rois_per_file', dtype=int, initial=100, vmin=0, vmax=1000000)
         
         self.settings.New('normalization',dtype=int,initial=16, vmin=1)
+
+        self.settings.New('camera_in_use', dtype=str, choices=list(VIEWS), initial=list(VIEWS)[0])
         
         # Convenient reference to the hardware used in the measurement
         self.camera = self.app.hardware['IDS']
@@ -100,6 +105,8 @@ class IfcMeasure(Measurement):
         self.settings.level_max.connect_to_widget(self.ui.max_doubleSpinBox)
         self.settings.zoom.connect_to_widget(self.ui.zoomSlider)
         self.settings.rotate.connect_to_widget(self.ui.rotate_checkBox)
+        self.settings.camera_in_use.connect_to_widget(self.ui.camera_comboBox)
+
                 
         # Set up pyqtgraph graph_layout in the UI
         self.imv = pg.ImageView()
