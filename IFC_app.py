@@ -25,7 +25,12 @@ class camera_app(BaseMicroscopeApp):
         print("Adding Hardware Components")
         add_path('IDS_ScopeFoundry')
         from camera_hw import IdsHW
-        self.add_hardware(IdsHW(self))
+        self.add_hardware(IdsHW(self, name='camA'))
+        self.add_hardware(IdsHW(self, name='camB'))
+
+        #add_path('NIdaqmx_ScopeFoundry')
+        #from ni_co_hardware import NI_CO_hw
+        #self.add_hardware(NI_CO_hw(self))
         
         # Add measurement components
         print("Create Measurement objects")

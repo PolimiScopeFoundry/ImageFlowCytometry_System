@@ -14,7 +14,7 @@ from pyqtgraph.Qt import QtWidgets
 from image_data import ImageManager
 
 
-VIEWS = {'A':0, 'B':1, 'Merged':100}
+VIEWS = {'A':0, 'B':1, 'Merged':None}
 
 class IfcMeasure(Measurement):
  
@@ -69,15 +69,22 @@ class IfcMeasure(Measurement):
         
         self.settings.New('normalization',dtype=int,initial=16, vmin=1)
 
-        self.settings.New('camera_in_use', dtype=str, choices=list(VIEWS), initial=list(VIEWS)[0])
+        self.settings.New('current_view', dtype=str, choices=list(VIEWS), initial=list(VIEWS)[0])
         
         # Convenient reference to the hardware used in the measurement
-        self.camera = self.app.hardware['IDS']
+        
+        #self.trigger = self.app.hardware['NI_CO_hw']
+        
+        self.cameras=[]
+        self.cameras.append(self.app.hardware['camA'])
+        self.cameras.append(self.app.hardware['camB'])
+
         try:
-            if not self.camera.settings['connected']:
-                self.camera.settings['connected'] = True
-            self.camera.camera_device.set_bit_depth(16) # try to set maximum bit depth. On IDS cameras if 16 is not available, the device will try to set a smaller one
-            self.camera.camera_device.set_full_chip()
+            for camera in self.cameras:
+                if not camera.settings['connected']:
+                    camera.settings['connected'] = True
+                camera.camera_device.set_bit_depth(16) # try to set maximum bit depth. On IDS cameras if 16 is not available, the device will try to set a smaller one
+                camera.camera_device.set_full_chip()
         except Exception:
             print('Camera not found. Index Error')
 
@@ -105,7 +112,7 @@ class IfcMeasure(Measurement):
         self.settings.level_max.connect_to_widget(self.ui.max_doubleSpinBox)
         self.settings.zoom.connect_to_widget(self.ui.zoomSlider)
         self.settings.rotate.connect_to_widget(self.ui.rotate_checkBox)
-        self.settings.camera_in_use.connect_to_widget(self.ui.camera_comboBox)
+        self.settings.current_view.connect_to_widget(self.ui.camera_comboBox)
 
                 
         # Set up pyqtgraph graph_layout in the UI
@@ -199,44 +206,54 @@ class IfcMeasure(Measurement):
             self.settings['progress'] = progress # Set progress bar percentage complete
 
 
+    def get_camera_in_use(self):
+        current_view = self.settings['current_view'] # A,B or Merged
+        view= VIEWS[current_view] # 0,1 or None
+        camera_in_use = view if view is not None else 0 # if view is Merged, use camera A to set up the image manager. This is arbitrary since both cameras should have the same resolution and bit depth
+        return camera_in_use
+
+
     def pre_run(self):
         """Initialize the acquisiton and the image structure
         """
-        # Acquire initial image (1 for each channel) to set up the Image Manager
-        self.camera.camera_device.set_acquisition_mode("SingleFrame") # 
-        self.camera.camera_device.start_acquisition()   
-        
         self.first_run = True # flag for initializing h5 roi file
+        
+        # Acquire initial image (1 for each channel) to set up the Image Manager
+        camera = self.cameras[self.get_camera_in_use()]
+        
+        camera.camera_device.set_acquisition_mode("SingleFrame") # 
+        camera.camera_device.start_acquisition()   
+        
                        
-        img = self.camera.camera_device.get_frame()
+        img = camera.camera_device.get_frame()
                
         self.im = ImageManager(
                         img.shape[1], img.shape[0],
                         self.settings.roi_size.val,
-                        Nchannels=1, #TODO change when multiple color are aquired
+                        Nchannels=len(self.cameras), #TODO change when multiple color are aquired
                         dtype=img.dtype,
-                        debug = self.camera.debug_mode.val
+                        debug = camera.debug_mode.val
                         )
         self.im.image[0,...] = img
-        self.camera.camera_device.stop_acquisition()  
+        camera.camera_device.stop_acquisition()  
 
 
     def run(self):
         """Start acquisition that is always live at startup"""
 
-        self.camera.camera_device.set_acquisition_mode("Continuous")
-        self.camera.camera_device.set_stream_mode("NewestOnly") 
-        self.camera.camera_device.start_acquisition(buffersize=self.settings.buffer_size.val)  
+        for camera in self.cameras:
+            camera.camera_device.set_acquisition_mode("Continuous")
+            camera.camera_device.set_stream_mode("NewestOnly") 
+            camera.camera_device.start_acquisition(buffersize=self.settings.buffer_size.val)  
 
         while not self.interrupt_measurement_called:
               
-            
-            img = self.camera.camera_device.get_frame()
-
-            self.im.image[0,...] = img
+            for idx,camera in enumerate(self.cameras):
+                img = camera.camera_device.get_frame()
+                self.im.image[idx,...] = img
             
             if self.settings['detect']:
-                self.detect_objects()
+                self.detect_objects(channel=self.get_camera_in_use())
             else:
                 self.settings['objects_in_frame'] = 0
                 self.im.clear_countours() 
@@ -253,57 +270,70 @@ class IfcMeasure(Measurement):
             if self.interrupt_measurement_called:
                 break
 
-        self.camera.camera_device.stop_acquisition()  
+        for camera in self.cameras:            
+            camera.camera_device.stop_acquisition()  
 
     
     def save_roi(self):
 
         self.init_h5()
-        self.camera.camera_device.stop_acquisition() 
-        self.camera.camera_device.set_acquisition_mode("Continuous")
-        self.camera.camera_device.set_stream_mode("OldestFirst") 
-        self.camera.camera_device.start_acquisition(buffersize=self.settings.buffer_size.val)
+        for camera in self.cameras:
+            camera.camera_device.stop_acquisition() 
+            camera.camera_device.set_acquisition_mode("Continuous")
+            camera.camera_device.set_stream_mode("OldestFirst") 
+            # TODO: set camera to external trigger mode
+            camera.camera_device.start_acquisition(buffersize=self.settings.buffer_size.val)
 
         time_index=0
 
         self.settings['detect'] = True 
 
+        # TODO: start trigger
+
         while not self.interrupt_measurement_called:
             
-            img = self.camera.camera_device.get_frame()
-            grabbing, delivered, lost, in_cnt, out_cnt, frame_id = self.camera.camera_device.get_buffer_count() 
-            self.detect_objects()
-            self.im.image[0,...] = img
-            znum = 1 # TODO: self.settings['frame_num'] # change to znum when z-stacks are implemented
+            for channel_idx,camera in enumerate(self.cameras):
+                img = camera.camera_device.get_frame()
+                grabbing, delivered, lost, in_cnt, out_cnt, frame_id = camera.camera_device.get_buffer_count() 
+                if channel_idx == self.get_camera_in_use():
+                    self.detect_objects(channel_idx)
+                self.im.image[channel_idx,...] = img
+                znum = 1 # TODO: self.settings['frame_num'] # change to znum when z-stacks are implemented
+            
             im = self.im.copy()
+            
             roisize = self.settings['roi_size']
         
             for roi_idx in range(len(im.cx)):
-                h5_roi_dataset = self.prepare_h5_dataset(time_index,
-                                    channels_index=0,
+                for channel_idx,camera in enumerate(self.cameras):
+                    h5_roi_dataset = self.prepare_h5_dataset(time_index,
+                                    channels_index=channel_idx,
                                     z_number=znum,
                                     imshape=[roisize,roisize],
                                     dtype=im.image.dtype,
                                     name='roi',
                                     )
-                roi = im.extract_rois(0,im.cx,im.cy)
-                h5_roi_dataset[0,:,:] = roi[roi_idx]
+                    roi = im.extract_rois(channel_idx,im.cx,im.cy)
+                    h5_roi_dataset[0,:,:] = roi[roi_idx]
                 time_index += 1
                 self.settings['captured_objects'] += 1
                 self.h5file.flush() 
 
                 if self.interrupt_measurement_called or time_index >= self.settings.rois_per_file.val:
+                    # TODO: stop trigger
+                    # TODO: set camera to internal trigger
                     self.close_h5()
                     self.settings['saving_type'] = 'None'
-                    self.camera.camera_device.stop_acquisition()  
+                    for camera in self.cameras:     
+                        camera.camera_device.stop_acquisition()  
                     return
 
-    def detect_objects(self):
+    def detect_objects(self,channel=0):
         #time0 = time.time()
-        self.im.find_object(channel=0,
+        self.im.find_object(channel=channel,
                             min_object_area = self.settings.min_object_area.val,
                             max_object_area = self.settings.max_object_area.val,
-                            bitdepth = self.camera.camera_device.get_bit_depth(),
+                            bitdepth = self.cameras[channel].camera_device.get_bit_depth(),
                             norm_factor = self.settings.normalization.val)
         self.settings['objects_in_frame'] = len(self.im.contours)
         #print(f'Objects {self.settings['objects_in_frame']} acquired in {time.time()-time0:.3f} s')
@@ -312,12 +342,13 @@ class IfcMeasure(Measurement):
     def save_stack(self):
 
         znum = self.settings['frame_num']
-        channel_num = 1
+        channel_num = len(self.cameras)
         
-        self.camera.camera_device.stop_acquisition()
-        self.camera.camera_device.set_acquisition_mode("MultiFrame")
-        self.camera.camera_device.set_frame_num(znum*channel_num)
-        self.camera.camera_device.set_stream_mode("OldestFirst")
+        for camera in self.cameras:
+            camera.camera_device.stop_acquisition()
+            camera.camera_device.set_acquisition_mode("MultiFrame")
+            camera.camera_device.set_frame_num(znum*channel_num)
+            camera.camera_device.set_stream_mode("OldestFirst")
 
         images_h5 = self.init_h5()
         
@@ -329,27 +360,29 @@ class IfcMeasure(Measurement):
                                 dtype=self.im.image.dtype,
                                 name='stack',
                                 )
-
-        self.camera.camera_device.start_acquisition() 
+        for camera in self.cameras:
+            camera.camera_device.start_acquisition() 
+        
         self.frame_index = 0
         while self.frame_index < znum:
-            self.channel_index = 0 
-            while self.channel_index < channel_num:
-                img = self.camera.camera_device.get_frame() 
-                self.camera.camera_device.get_buffer_count()  
-                self.im.image[0,...] = img
+            channel_index = 0 
+            while channel_index < channel_num:
+                img = self.cameras[channel_index].camera_device.get_frame() 
+                self.cameras[channel_index].camera_device.get_buffer_count()  
+                self.im.image[channel_index,...] = img
                 
-                images_h5[self.channel_index][self.frame_index,:,:] = img
+                images_h5[channel_index][self.frame_index,:,:] = img
                 self.h5file.flush() # introduces a slight time delay but assures that images are stored continuosly 
                 
-                self.channel_index +=1
+                channel_index +=1
             if self.interrupt_measurement_called:
-                    break
+                break
             self.frame_index +=1  
 
         self.close_h5()
-        self.camera.camera_device.stop_acquisition()
-        self.camera.camera_device.set_acquisition_mode("Continuous")
+        for camera in self.cameras:
+            camera.camera_device.stop_acquisition()
+            camera.camera_device.set_acquisition_mode("Continuous")
         self.settings['saving_type'] = 'None'
 
 
