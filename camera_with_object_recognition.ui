@@ -308,7 +308,7 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <layout class="QGridLayout" name="autoscale_layout" rowstretch="0,0,0,0,0,0,0" columnstretch="0,0">
+        <layout class="QGridLayout" name="autoscale_layout" rowstretch="0,0,0,0,0,0" columnstretch="0,0">
          <property name="leftMargin">
           <number>5</number>
          </property>
@@ -324,17 +324,48 @@
          <property name="spacing">
           <number>5</number>
          </property>
+         <item row="3" column="0">
+          <widget class="QDoubleSpinBox" name="min_doubleSpinBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="showGroupSeparator" stdset="0">
+            <bool>false</bool>
+           </property>
+           <property name="decimals">
+            <number>0</number>
+           </property>
+           <property name="maximum">
+            <double>10000000000000.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QDoubleSpinBox" name="max_doubleSpinBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="wrapping">
+            <bool>false</bool>
+           </property>
+           <property name="decimals">
+            <number>0</number>
+           </property>
+           <property name="maximum">
+            <double>1000000000.000000000000000</double>
+           </property>
+          </widget>
+         </item>
          <item row="0" column="0">
           <widget class="QCheckBox" name="rotate_checkBox">
            <property name="text">
             <string>Rotate</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QCheckBox" name="autoLevels_checkbox">
-           <property name="text">
-            <string>AutoLevels</string>
            </property>
           </widget>
          </item>
@@ -358,22 +389,10 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
-          <widget class="QDoubleSpinBox" name="max_doubleSpinBox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="wrapping">
-            <bool>false</bool>
-           </property>
-           <property name="decimals">
-            <number>0</number>
-           </property>
-           <property name="maximum">
-            <double>1000000000.000000000000000</double>
+         <item row="2" column="1">
+          <widget class="QLabel" name="level_max_label">
+           <property name="text">
+            <string>max</string>
            </property>
           </widget>
          </item>
@@ -390,49 +409,11 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
-          <widget class="QLabel" name="level_max_label">
+         <item row="1" column="0">
+          <widget class="QCheckBox" name="autoLevels_checkbox">
            <property name="text">
-            <string>max</string>
+            <string>AutoLevels</string>
            </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QDoubleSpinBox" name="min_doubleSpinBox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="showGroupSeparator" stdset="0">
-            <bool>false</bool>
-           </property>
-           <property name="decimals">
-            <number>0</number>
-           </property>
-           <property name="maximum">
-            <double>10000000000000.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="0">
-          <widget class="QComboBox" name="camera_comboBox">
-           <item>
-            <property name="text">
-             <string>A</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>B</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Merged</string>
-            </property>
-           </item>
           </widget>
          </item>
         </layout>
