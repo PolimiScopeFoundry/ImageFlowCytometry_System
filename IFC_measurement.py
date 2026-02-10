@@ -152,7 +152,13 @@ class IfcMeasure(Measurement):
         
         #time0 = time.time()
         im = self.im.copy()
-        img = im.image[0,...]
+
+
+        current_view = self.settings['current_view'] # A,B or Merged
+        view= VIEWS[current_view] # 0,1 or None
+        camera_in_use = self.get_camera_in_use()    
+
+        img = im.image[camera_in_use,...]
         if hasattr(self.im,"image8bit") and self.settings['detect']:
             img = self.im.image8bit #TODO check if contrast is shown properly
 
@@ -187,7 +193,7 @@ class IfcMeasure(Measurement):
         self.imv.setImage(img,
                         autoLevels = self.settings['auto_levels'],
                         autoRange = self.settings['auto_range'],
-                        levelMode = 'mono'
+                        levelMode = 'mono' #TODO:for Merged view, implement RGB
                         )
             
         if self.settings['auto_levels']:
