@@ -156,6 +156,8 @@ class IfcMeasure(Measurement):
 
         current_view = self.settings['current_view'] # A,B or Merged
         view= VIEWS[current_view] # 0,1 or None
+
+
         camera_in_use = self.get_camera_in_use()    
 
         img = im.image[camera_in_use,...]
