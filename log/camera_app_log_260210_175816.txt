@@ -1,0 +1,9 @@
+2026-02-10T17:58:17|CRITICAL|root|Unhandled exception: Traceback (most recent call last):
+  File "d:\Lab Programes\Scopefoundry\ImageFlowCytometry_System\IFC_app.py", line 45, in <module>
+    app = camera_app(sys.argv)
+  File "C:\Users\fastFMT\anaconda3\envs\scopefoundry\lib\site-packages\ScopeFoundry\base_app\base_microscope_app.py", line 88, in __init__
+    self.setup()
+  File "d:\Lab Programes\Scopefoundry\ImageFlowCytometry_System\IFC_app.py", line 28, in setup
+    self.add_hardware(IdsHW(self, name='camA', cam_num=0))
+TypeError: HardwareComponent.__init__() got an unexpected keyword argument 'cam_num'
+
