@@ -70,6 +70,8 @@ class IfcMeasure(Measurement):
         self.settings.New('normalization',dtype=int,initial=16, vmin=1)
 
         self.settings.New('current_view', dtype=str, choices=list(VIEWS), initial=list(VIEWS)[0])
+        self.settings.New('intensityA', dtype=int, initial=1, vmin=1)
+        self.settings.New('intensityB', dtype=int, initial=1, vmin=1)
         
         # Convenient reference to the hardware used in the measurement
         
@@ -113,6 +115,8 @@ class IfcMeasure(Measurement):
         self.settings.zoom.connect_to_widget(self.ui.zoomSlider)
         self.settings.rotate.connect_to_widget(self.ui.rotate_checkBox)
         self.settings.current_view.connect_to_widget(self.ui.camera_comboBox)
+        self.settings.intensityA.connect_to_widget(self.ui.channelA_Slider)
+        self.settings.intensityB.connect_to_widget(self.ui.channelB_Slider)
 
                 
         # Set up pyqtgraph graph_layout in the UI
@@ -150,61 +154,66 @@ class IfcMeasure(Measurement):
         # Plot countours and rectangles around detected objects
         roisize = self.settings['roi_size']
         
-        #time0 = time.time()
         im = self.im.copy()
 
-
         current_view = self.settings['current_view'] # A,B or Merged
-        view= VIEWS[current_view] # 0,1 or None
-
-
-        camera_in_use = self.get_camera_in_use()    
-
-        img = im.image[camera_in_use,...]
-        if hasattr(self.im,"image8bit") and self.settings['detect']:
-            img = self.im.image8bit #TODO check if contrast is shown properly
-
-        if self.settings.saving_type.val == 'None':
-            self.screen_width = self.ui.screen().size().width()
-            width = int(self.screen_width*self.settings['zoom']/100)
-            self.ui.setFixedWidth(width)
-
-        for indx, cnt in enumerate(im.contours):
-            cnt = cnt.squeeze()
-            if cnt.ndim == 2 and len(cnt) > 1:
-                if self.settings['rotate']: 
-                    curve = pg.PlotCurveItem(cnt[:, 0], cnt[:, 1], pen=pg.mkPen('g', width=0.5))
-                else:
-                    curve = pg.PlotCurveItem(cnt[:, 1], cnt[:, 0], pen=pg.mkPen('g', width=0.5))
-                
-                self.imv.getView().addItem(curve)
+        
+        if current_view == 'Merged':
+            merged_img = self.im.merge_channels(channels=[0,1], norm_factor=[self.settings.intensityA.val,self.settings.intensityB.val])
+            self.imv.setImage(merged_img,
+                    # autoLevels = self.settings['auto_levels'],
+                    # autoRange = self.settings['auto_range']
+                    )
             
-            x = int(im.cx[indx] - roisize//2)
-            y = int(im.cy[indx] - roisize//2)
-            if self.settings['rotate']:   
-                rect = QtWidgets.QGraphicsRectItem(x, y, roisize, roisize)
-            else:
-                rect = QtWidgets.QGraphicsRectItem(y, x, roisize, roisize)
-            rect.setPen(pg.mkPen(color='r', width=1))
-            self.imv.getView().addItem(rect)
-
-
-        if self.settings['rotate']:   
-            img=img.T
-
-        self.imv.setImage(img,
-                        autoLevels = self.settings['auto_levels'],
-                        autoRange = self.settings['auto_range'],
-                        levelMode = 'mono' #TODO:for Merged view, implement RGB
-                        )
-            
-        if self.settings['auto_levels']:
-            lmin,lmax = self.imv.getHistogramWidget().getLevels()
-            self.settings['level_min'] = lmin
-            self.settings['level_max'] = lmax
         else:
-            self.imv.setLevels( min= self.settings['level_min'],
-                                max= self.settings['level_max'])
+
+            camera_in_use = self.get_camera_in_use()    
+
+            img = im.image[camera_in_use,...]
+            if hasattr(self.im,"image8bit") and self.settings['detect']:
+                img = self.im.image8bit #TODO check if contrast is shown properly
+
+            if self.settings.saving_type.val == 'None':
+                self.screen_width = self.ui.screen().size().width()
+                width = int(self.screen_width*self.settings['zoom']/100)
+                self.ui.setFixedWidth(width)
+
+            for indx, cnt in enumerate(im.contours):
+                cnt = cnt.squeeze()
+                if cnt.ndim == 2 and len(cnt) > 1:
+                    if self.settings['rotate']: 
+                        curve = pg.PlotCurveItem(cnt[:, 0], cnt[:, 1], pen=pg.mkPen('g', width=0.5))
+                    else:
+                        curve = pg.PlotCurveItem(cnt[:, 1], cnt[:, 0], pen=pg.mkPen('g', width=0.5))
+                    
+                    self.imv.getView().addItem(curve)
+                
+                x = int(im.cx[indx] - roisize//2)
+                y = int(im.cy[indx] - roisize//2)
+                if self.settings['rotate']:   
+                    rect = QtWidgets.QGraphicsRectItem(x, y, roisize, roisize)
+                else:
+                    rect = QtWidgets.QGraphicsRectItem(y, x, roisize, roisize)
+                rect.setPen(pg.mkPen(color='r', width=1))
+                self.imv.getView().addItem(rect)
+
+
+            if self.settings['rotate']:   
+                img=img.T
+
+            self.imv.setImage(img,
+                            autoLevels = self.settings['auto_levels'],
+                            autoRange = self.settings['auto_range'],
+                            levelMode = 'mono' #TODO:for Merged view, implement RGB
+                            )
+                
+            if self.settings['auto_levels']:
+                lmin,lmax = self.imv.getHistogramWidget().getLevels()
+                self.settings['level_min'] = lmin
+                self.settings['level_max'] = lmax
+            else:
+                self.imv.setLevels( min= self.settings['level_min'],
+                                    max= self.settings['level_max'])
 
 
         if self.settings['saving_type'] == 'Stack' and hasattr(self, 'frame_index'):

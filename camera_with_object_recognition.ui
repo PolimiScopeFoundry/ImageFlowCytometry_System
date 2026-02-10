@@ -106,7 +106,7 @@
         <property name="title">
          <string/>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0">
+        <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
          <property name="spacing">
           <number>5</number>
          </property>
@@ -122,13 +122,6 @@
          <property name="bottomMargin">
           <number>5</number>
          </property>
-         <item>
-          <widget class="QFrame" name="frame">
-           <property name="frameShape">
-            <enum>QFrame::NoFrame</enum>
-           </property>
-          </widget>
-         </item>
          <item>
           <widget class="QPushButton" name="start_pushButton">
            <property name="sizePolicy">
@@ -308,7 +301,7 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <layout class="QGridLayout" name="autoscale_layout" rowstretch="0,0,0,0,0,0,0" columnstretch="0,0">
+        <layout class="QGridLayout" name="autoscale_layout" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0,0" columnstretch="0,0">
          <property name="leftMargin">
           <number>5</number>
          </property>
@@ -324,76 +317,26 @@
          <property name="spacing">
           <number>5</number>
          </property>
-         <item row="0" column="0">
-          <widget class="QCheckBox" name="rotate_checkBox">
-           <property name="text">
-            <string>Rotate</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QCheckBox" name="autoLevels_checkbox">
-           <property name="text">
-            <string>AutoLevels</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QLabel" name="level_min_label">
-           <property name="text">
-            <string>min</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0">
-          <widget class="QCheckBox" name="autoRange_checkbox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>AutoRange</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QDoubleSpinBox" name="max_doubleSpinBox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="wrapping">
-            <bool>false</bool>
-           </property>
-           <property name="decimals">
-            <number>0</number>
+         <item row="12" column="0">
+          <widget class="QSlider" name="channelB_Slider">
+           <property name="minimum">
+            <number>1</number>
            </property>
            <property name="maximum">
-            <double>1000000000.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0" colspan="2">
-          <widget class="QSlider" name="zoomSlider">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
+            <number>100</number>
            </property>
            <property name="value">
             <number>50</number>
            </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
           </widget>
          </item>
-         <item row="2" column="1">
-          <widget class="QLabel" name="level_max_label">
+         <item row="0" column="0">
+          <widget class="QCheckBox" name="rotate_checkBox">
            <property name="text">
-            <string>max</string>
+            <string>Rotate</string>
            </property>
           </widget>
          </item>
@@ -416,8 +359,14 @@
            </property>
           </widget>
          </item>
-         <item row="6" column="0">
+         <item row="8" column="0">
           <widget class="QComboBox" name="camera_comboBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <item>
             <property name="text">
              <string>A</string>
@@ -435,14 +384,103 @@
            </item>
           </widget>
          </item>
+         <item row="2" column="0">
+          <widget class="QDoubleSpinBox" name="max_doubleSpinBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="wrapping">
+            <bool>false</bool>
+           </property>
+           <property name="decimals">
+            <number>0</number>
+           </property>
+           <property name="maximum">
+            <double>1000000000.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="11" column="0">
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>Channel B</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLabel" name="level_min_label">
+           <property name="text">
+            <string>min</string>
+           </property>
+          </widget>
+         </item>
+         <item row="9" column="0">
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>Channel A</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLabel" name="level_max_label">
+           <property name="text">
+            <string>max</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QCheckBox" name="autoLevels_checkbox">
+           <property name="text">
+            <string>AutoLevels</string>
+           </property>
+          </widget>
+         </item>
+         <item row="10" column="0">
+          <widget class="QSlider" name="channelA_Slider">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <number>100</number>
+           </property>
+           <property name="value">
+            <number>50</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <widget class="QCheckBox" name="autoRange_checkbox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>AutoRange</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="0">
+          <widget class="QSlider" name="horizontalSlider">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
         </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QFrame" name="frame_2">
-        <property name="frameShape">
-         <enum>QFrame::NoFrame</enum>
-        </property>
        </widget>
       </item>
      </layout>
