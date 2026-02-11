@@ -70,8 +70,8 @@ class IfcMeasure(Measurement):
         self.settings.New('normalization',dtype=int,initial=16, vmin=1)
 
         self.settings.New('current_view', dtype=str, choices=list(VIEWS), initial=list(VIEWS)[0])
-        self.settings.New('intensityA', dtype=int, initial=1, vmin=1)
-        self.settings.New('intensityB', dtype=int, initial=1, vmin=1)
+        self.settings.New('intensityA', dtype=int, initial=1, vmin=1, vmax=10)
+        self.settings.New('intensityB', dtype=int, initial=1, vmin=1, vmax=10)
         
         # Convenient reference to the hardware used in the measurement
         
@@ -159,11 +159,13 @@ class IfcMeasure(Measurement):
         current_view = self.settings['current_view'] # A,B or Merged
         
         if current_view == 'Merged':
-            max_slider = 100 # TODO: read this from the slider ui
-            max_enanchment = 10  # this enanches the channel to a maximum of 10X
-            intensityA = 1+ self.settings.intensityA.val / max_slider * max_enanchment
-            intensityB = 1+ self.settings.intensityB.val / max_slider * max_enanchment
-            merged_img = self.im.merge_channels(channels=[0,1], enanched=[intensityA,intensityB])
+        
+            intensityA = self.settings.intensityA.val
+            intensityB = self.settings.intensityB.val
+            merged_img = self.im.merge_channels(channels=[0,1],
+                                                enanched=[intensityA,intensityB],
+                                                bitdepth=self.cameras[0].camera_device.get_bit_depth()
+                                                )
             if self.settings['rotate']:   
                 merged_img=merged_img.T
             self.imv.setImage(merged_img,
