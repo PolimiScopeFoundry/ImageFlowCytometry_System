@@ -1,4 +1,4 @@
-2026-02-11T16:38:07|CRITICAL|root|Unhandled exception: Traceback (most recent call last):
+2026-02-11T17:28:51|CRITICAL|root|Unhandled exception: Traceback (most recent call last):
   File "C:\Users\fastFMT\anaconda3\envs\scopefoundry\lib\site-packages\ScopeFoundry\hardware.py", line 113, in enable_connection
     raise err
   File "C:\Users\fastFMT\anaconda3\envs\scopefoundry\lib\site-packages\ScopeFoundry\hardware.py", line 101, in enable_connection
@@ -9,9 +9,9 @@
     self.device = device_manager.Devices()[cam_num].OpenDevice(ids_peak.DeviceAccessType_Control)
   File "C:\Users\fastFMT\anaconda3\envs\scopefoundry\lib\site-packages\ids_peak\ids_peak.py", line 5309, in OpenDevice
     return _ids_peak_python_interface.DeviceDescriptor_OpenDevice(self, accessType)
-ids_peak.ids_peak.BadAccessException: Error-Code: 4 (PEAK_RETURN_CODE_BAD_ACCESS) | Error-Description: [Function: IFOpenDevice | Error-Code: -1004 (GC_ERR_RESOURCE_IN_USE) | Error-Text: Module 1409f4e73a51U3-386xCP-M-0 is open already!
+ids_peak.ids_peak.BadAccessException: Error-Code: 4 (PEAK_RETURN_CODE_BAD_ACCESS) | Error-Description: [Function: IFOpenDevice | Error-Code: -1004 (GC_ERR_RESOURCE_IN_USE) | Error-Text: Module 1409f4e73a52U3-386xCP-M-0 is open already!
 
-2026-02-11T16:38:07|CRITICAL|root|Unhandled exception: Traceback (most recent call last):
+2026-02-11T17:28:51|CRITICAL|root|Unhandled exception: Traceback (most recent call last):
   File "C:\Users\fastFMT\anaconda3\envs\scopefoundry\lib\site-packages\ScopeFoundry\hardware.py", line 113, in enable_connection
     raise err
   File "C:\Users\fastFMT\anaconda3\envs\scopefoundry\lib\site-packages\ScopeFoundry\hardware.py", line 101, in enable_connection
@@ -22,8 +22,19 @@ ids_peak.ids_peak.BadAccessException: Error-Code: 4 (PEAK_RETURN_CODE_BAD_ACCESS
     self.device = device_manager.Devices()[cam_num].OpenDevice(ids_peak.DeviceAccessType_Control)
   File "C:\Users\fastFMT\anaconda3\envs\scopefoundry\lib\site-packages\ids_peak\ids_peak.py", line 5309, in OpenDevice
     return _ids_peak_python_interface.DeviceDescriptor_OpenDevice(self, accessType)
-ids_peak.ids_peak.BadAccessException: Error-Code: 4 (PEAK_RETURN_CODE_BAD_ACCESS) | Error-Description: [Function: IFOpenDevice | Error-Code: -1004 (GC_ERR_RESOURCE_IN_USE) | Error-Text: Module 1409f4e73a52U3-386xCP-M-1 is open already!
+ids_peak.ids_peak.BadAccessException: Error-Code: 4 (PEAK_RETURN_CODE_BAD_ACCESS) | Error-Description: [Function: IFOpenDevice | Error-Code: -1004 (GC_ERR_RESOURCE_IN_USE) | Error-Text: Module 1409f4e73a51U3-386xCP-M-1 is open already!
 
-2026-02-11T16:48:47|INFO|camera_app|on_close
-2026-02-11T16:48:47|INFO|camera_app|disconnecting camA
-2026-02-11T16:48:47|INFO|camera_app|disconnecting camB
+2026-02-11T17:28:53|INFO|camera_app|proposed values settings.ini
+2026-02-11T17:28:53|INFO|camera_app|settings loaded from D:\Lab Programes\Scopefoundry\ImageFlowCytometry_System\Settings\settings.ini
+2026-02-11T17:46:45|INFO|camera_app|on_close
+2026-02-11T17:46:45|INFO|camera_app|disconnecting camA
+2026-02-11T17:46:45|INFO|camera_app|disconnecting camB
+2026-02-11T17:46:45|CRITICAL|root|Unhandled exception: Traceback (most recent call last):
+  File "C:\Users\fastFMT\anaconda3\envs\scopefoundry\lib\site-packages\ScopeFoundry\measurement.py", line 38, in run
+    self.measurement._thread_run()
+  File "C:\Users\fastFMT\anaconda3\envs\scopefoundry\lib\site-packages\ScopeFoundry\measurement.py", line 254, in _thread_run
+    self.run()
+  File "d:\Lab Programes\Scopefoundry\ImageFlowCytometry_System\IFC_measurement.py", line 272, in run
+    while not self.interrupt_measurement_called:
+AttributeError: 'IdsHW' object has no attribute 'camera_device'
+

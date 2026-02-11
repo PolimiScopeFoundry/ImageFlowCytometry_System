@@ -1,4 +1,4 @@
-2026-02-11T16:38:07|CRITICAL|root|Unhandled exception: Traceback (most recent call last):
+2026-02-11T17:05:49|CRITICAL|root|Unhandled exception: Traceback (most recent call last):
   File "C:\Users\fastFMT\anaconda3\envs\scopefoundry\lib\site-packages\ScopeFoundry\hardware.py", line 113, in enable_connection
     raise err
   File "C:\Users\fastFMT\anaconda3\envs\scopefoundry\lib\site-packages\ScopeFoundry\hardware.py", line 101, in enable_connection
@@ -11,7 +11,7 @@
     return _ids_peak_python_interface.DeviceDescriptor_OpenDevice(self, accessType)
 ids_peak.ids_peak.BadAccessException: Error-Code: 4 (PEAK_RETURN_CODE_BAD_ACCESS) | Error-Description: [Function: IFOpenDevice | Error-Code: -1004 (GC_ERR_RESOURCE_IN_USE) | Error-Text: Module 1409f4e73a51U3-386xCP-M-0 is open already!
 
-2026-02-11T16:38:07|CRITICAL|root|Unhandled exception: Traceback (most recent call last):
+2026-02-11T17:05:49|CRITICAL|root|Unhandled exception: Traceback (most recent call last):
   File "C:\Users\fastFMT\anaconda3\envs\scopefoundry\lib\site-packages\ScopeFoundry\hardware.py", line 113, in enable_connection
     raise err
   File "C:\Users\fastFMT\anaconda3\envs\scopefoundry\lib\site-packages\ScopeFoundry\hardware.py", line 101, in enable_connection
@@ -24,6 +24,10 @@ ids_peak.ids_peak.BadAccessException: Error-Code: 4 (PEAK_RETURN_CODE_BAD_ACCESS
     return _ids_peak_python_interface.DeviceDescriptor_OpenDevice(self, accessType)
 ids_peak.ids_peak.BadAccessException: Error-Code: 4 (PEAK_RETURN_CODE_BAD_ACCESS) | Error-Description: [Function: IFOpenDevice | Error-Code: -1004 (GC_ERR_RESOURCE_IN_USE) | Error-Text: Module 1409f4e73a52U3-386xCP-M-1 is open already!
 
-2026-02-11T16:48:47|INFO|camera_app|on_close
-2026-02-11T16:48:47|INFO|camera_app|disconnecting camA
-2026-02-11T16:48:47|INFO|camera_app|disconnecting camB
+2026-02-11T17:07:14|INFO|camera_app|proposed values settings.ini
+2026-02-11T17:07:14|INFO|camera_app|settings saved to D:/Lab Programes/Scopefoundry/ImageFlowCytometry_System/Settings/settings.ini
+2026-02-11T17:07:37|INFO|camera_app|proposed values settings.ini
+2026-02-11T17:07:37|INFO|camera_app|settings saved to D:/Lab Programes/Scopefoundry/ImageFlowCytometry_System/Settings/settings.ini
+2026-02-11T17:15:18|INFO|camera_app|on_close
+2026-02-11T17:15:19|INFO|camera_app|disconnecting camA
+2026-02-11T17:15:19|INFO|camera_app|disconnecting camB

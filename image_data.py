@@ -154,7 +154,7 @@ class ImageManager:
          cv2.rectangle(displayed_image,(0,0),(self.dim_h-1,self.dim_v-1),(255,255,0),3) 
    
             
-    def merge_channels(self, channels=[0,1], norm_factor=[1,1]):
+    def merge_channels(self, channels=[0,1], enanched=[1.0,1.0], bitdepth=12):
         """ Input: 
         ch1, ch2: selected channels to merge
             Output:
@@ -164,8 +164,10 @@ class ImageManager:
         im0 = self.image[channels[0]]
         im1 = self.image[channels[1]]
 
-        im0_8bit = (im0/norm_factor[0]).astype('uint8')
-        im1_8bit = (im1/norm_factor[1]).astype('uint8')
+        norm_factor = (2**(bitdepth)-1) /255
+        
+        im0_8bit = (im0/norm_factor*enanched[0]).astype('uint8')
+        im1_8bit = (im1/norm_factor*enanched[1]).astype('uint8')
         
         merged_image = cv2.merge((im0_8bit,im1_8bit,im0_8bit)) #merge in violet and green the two channels, red is set to 0. The merged image is in RGB format, but opencv uses BGR format, so the order of the channels is reversed.
             

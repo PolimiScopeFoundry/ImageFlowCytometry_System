@@ -159,7 +159,13 @@ class IfcMeasure(Measurement):
         current_view = self.settings['current_view'] # A,B or Merged
         
         if current_view == 'Merged':
-            merged_img = self.im.merge_channels(channels=[0,1], norm_factor=[self.settings.intensityA.val,self.settings.intensityB.val])
+            max_slider = 100 # TODO: read this from the slider ui
+            max_enanchment = 10  # this enanches the channel to a maximum of 10X
+            intensityA = 1+ self.settings.intensityA.val / max_slider * max_enanchment
+            intensityB = 1+ self.settings.intensityB.val / max_slider * max_enanchment
+            merged_img = self.im.merge_channels(channels=[0,1], enanched=[intensityA,intensityB])
+            if self.settings['rotate']:   
+                merged_img=merged_img.T
             self.imv.setImage(merged_img,
                     # autoLevels = self.settings['auto_levels'],
                     # autoRange = self.settings['auto_range']

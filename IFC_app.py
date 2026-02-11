@@ -48,7 +48,7 @@ if __name__ == '__main__':
     new_path = os.path.join(path, 'Settings', 'settings.ini')
     print(new_path)
 
-    # app.settings_load_ini(new_path)
+    app.settings_load_ini(new_path)
     
     #connect all the hardwares
     for hc_name, hc in app.hardware.items():
