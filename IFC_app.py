@@ -21,7 +21,7 @@ class camera_app(BaseMicroscopeApp):
     
     def setup(self):
         
-        #Add hardware components
+        #Add hardware components 
         print("Adding Hardware Components")
         add_path('IDS_ScopeFoundry')
         from camera_hw import IdsHW

@@ -1,0 +1,39 @@
+2026-02-11T15:50:11|CRITICAL|root|Unhandled exception: Traceback (most recent call last):
+  File "C:\Users\fastFMT\anaconda3\envs\scopefoundry\lib\site-packages\ScopeFoundry\hardware.py", line 113, in enable_connection
+    raise err
+  File "C:\Users\fastFMT\anaconda3\envs\scopefoundry\lib\site-packages\ScopeFoundry\hardware.py", line 101, in enable_connection
+    self.connect()
+  File "d:\Lab Programes\Scopefoundry\IDS_ScopeFoundry\camera_hw.py", line 65, in connect
+    self.camera_device = Camera(cam_num=self.cam_num, debug=self.settings['debug_mode'])
+  File "d:\Lab Programes\Scopefoundry\IDS_ScopeFoundry\ids_library.py", line 20, in __init__
+    self.device = device_manager.Devices()[cam_num].OpenDevice(ids_peak.DeviceAccessType_Control)
+  File "C:\Users\fastFMT\anaconda3\envs\scopefoundry\lib\site-packages\ids_peak\ids_peak.py", line 5309, in OpenDevice
+    return _ids_peak_python_interface.DeviceDescriptor_OpenDevice(self, accessType)
+ids_peak.ids_peak.BadAccessException: Error-Code: 4 (PEAK_RETURN_CODE_BAD_ACCESS) | Error-Description: [Function: IFOpenDevice | Error-Code: -1004 (GC_ERR_RESOURCE_IN_USE) | Error-Text: Module 1409f4e73a52U3-386xCP-M-0 is open already!
+
+2026-02-11T15:50:11|CRITICAL|root|Unhandled exception: Traceback (most recent call last):
+  File "C:\Users\fastFMT\anaconda3\envs\scopefoundry\lib\site-packages\ScopeFoundry\hardware.py", line 113, in enable_connection
+    raise err
+  File "C:\Users\fastFMT\anaconda3\envs\scopefoundry\lib\site-packages\ScopeFoundry\hardware.py", line 101, in enable_connection
+    self.connect()
+  File "d:\Lab Programes\Scopefoundry\IDS_ScopeFoundry\camera_hw.py", line 65, in connect
+    self.camera_device = Camera(cam_num=self.cam_num, debug=self.settings['debug_mode'])
+  File "d:\Lab Programes\Scopefoundry\IDS_ScopeFoundry\ids_library.py", line 20, in __init__
+    self.device = device_manager.Devices()[cam_num].OpenDevice(ids_peak.DeviceAccessType_Control)
+  File "C:\Users\fastFMT\anaconda3\envs\scopefoundry\lib\site-packages\ids_peak\ids_peak.py", line 5309, in OpenDevice
+    return _ids_peak_python_interface.DeviceDescriptor_OpenDevice(self, accessType)
+ids_peak.ids_peak.BadAccessException: Error-Code: 4 (PEAK_RETURN_CODE_BAD_ACCESS) | Error-Description: [Function: IFOpenDevice | Error-Code: -1004 (GC_ERR_RESOURCE_IN_USE) | Error-Text: Module 1409f4e73a51U3-386xCP-M-1 is open already!
+
+2026-02-11T15:50:11|CRITICAL|root|Unhandled exception: Traceback (most recent call last):
+  File "d:\Lab Programes\Scopefoundry\ImageFlowCytometry_System\IFC_app.py", line 45, in <module>
+    app = camera_app(sys.argv)
+  File "C:\Users\fastFMT\anaconda3\envs\scopefoundry\lib\site-packages\ScopeFoundry\base_app\base_microscope_app.py", line 94, in __init__
+    self._setup_ui_mdi_area()
+  File "C:\Users\fastFMT\anaconda3\envs\scopefoundry\lib\site-packages\ScopeFoundry\base_app\base_microscope_app.py", line 252, in _setup_ui_mdi_area
+    ui = self.load_measure_ui(measure)
+  File "C:\Users\fastFMT\anaconda3\envs\scopefoundry\lib\site-packages\ScopeFoundry\base_app\base_microscope_app.py", line 389, in load_measure_ui
+    measure.setup_figure()
+  File "d:\Lab Programes\Scopefoundry\ImageFlowCytometry_System\IFC_measurement.py", line 115, in setup_figure
+    self.settings.zoom.connect_to_widget(self.ui.zoomSlider)
+AttributeError: 'QWidget' object has no attribute 'zoomSlider'
+

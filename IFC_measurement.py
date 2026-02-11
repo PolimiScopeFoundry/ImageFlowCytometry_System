@@ -112,7 +112,7 @@ class IfcMeasure(Measurement):
         self.settings.auto_range.connect_to_widget(self.ui.autoRange_checkbox)
         self.settings.level_min.connect_to_widget(self.ui.min_doubleSpinBox) 
         self.settings.level_max.connect_to_widget(self.ui.max_doubleSpinBox)
-        self.settings.zoom.connect_to_widget(self.ui.zoomSlider)
+        self.settings.zoom.connect_to_widget(self.ui.horizontalSlider)
         self.settings.rotate.connect_to_widget(self.ui.rotate_checkBox)
         self.settings.current_view.connect_to_widget(self.ui.camera_comboBox)
         self.settings.intensityA.connect_to_widget(self.ui.channelA_Slider)
