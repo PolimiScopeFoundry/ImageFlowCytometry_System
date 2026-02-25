@@ -73,14 +73,13 @@ class IfcMeasureTriggered(Measurement):
         self.settings.New('intensityA', dtype=int, initial=1, vmin=1, vmax=10)
         self.settings.New('intensityB', dtype=int, initial=1, vmin=1, vmax=10)
         
+        # Convenient reference to the hardware used in the measurement
+        
+        self.trigger = self.app.hardware['NI_CO_hw']
         self.settings.New('ni_freq', dtype=float, initial=15.0, vmin=0.1, vmax=30.0, unit='Hz')
         self.settings.New('ni_duty_cycle', dtype=float, initial=0.015, vmin=0.001, vmax=0.999)
         self.settings.New('ni_initial_delay', dtype=float, initial=0.0, vmin=0.0, unit='s')
 
-        # Convenient reference to the hardware used in the measurement
-        
-        self.trigger = self.app.hardware['NI_CO_hw']
-        
         self.cameras=[]
         self.cameras.append(self.app.hardware['camA'])
         self.cameras.append(self.app.hardware['camB'])
