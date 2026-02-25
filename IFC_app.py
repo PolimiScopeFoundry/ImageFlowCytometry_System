@@ -28,14 +28,17 @@ class camera_app(BaseMicroscopeApp):
         self.add_hardware(IdsHW(self, name='camA',cam_num=0))
         self.add_hardware(IdsHW(self, name='camB',cam_num=1))
 
-        #add_path('NIdaqmx_ScopeFoundry')
-        #from ni_co_hardware import NI_CO_hw
-        #self.add_hardware(NI_CO_hw(self))
+        add_path('NI_ScopeFoundry')
+        from ni_co_hardware import NI_CO_hw
+        self.add_hardware(NI_CO_hw(self))
         
         # Add measurement components
         print("Create Measurement objects")
         from IFC_measurement import IfcMeasure
         self.add_measurement(IfcMeasure(self))
+        from IFC_measurement_triggered import IfcMeasureTriggered
+        self.add_measurement(IfcMeasureTriggered(self))
+
 
 
 if __name__ == '__main__':
@@ -48,7 +51,7 @@ if __name__ == '__main__':
     new_path = os.path.join(path, 'Settings', 'settings.ini')
     print(new_path)
 
-    app.settings_load_ini(new_path)
+    #app.settings_load_ini(new_path)
     
     #connect all the hardwares
     for hc_name, hc in app.hardware.items():
