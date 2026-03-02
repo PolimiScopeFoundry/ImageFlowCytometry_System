@@ -1,7 +1,7 @@
 """
 Created on Sept 20 18:07:04 2025
 
-@authors: Andrea Bassi, Politecnico di Milano
+@authors: Andrea Bassi, Yoginder Singh Politecnico di Milano
 """
 
 from ScopeFoundry import BaseMicroscopeApp
@@ -25,8 +25,8 @@ class camera_app(BaseMicroscopeApp):
         print("Adding Hardware Components")
         add_path('IDS_ScopeFoundry')
         from camera_hw import IdsHW
-        self.add_hardware(IdsHW(self, name='camA',cam_num=0))
-        self.add_hardware(IdsHW(self, name='camB',cam_num=1))
+        self.add_hardware(IdsHW(self, name='camA', serial='4108794449'))  # Reflected 
+        self.add_hardware(IdsHW(self, name='camB', serial='4108794450'))  # Transmitted 
 
         add_path('NI_ScopeFoundry')
         from ni_co_hardware import NI_CO_hw

@@ -1,7 +1,7 @@
 """
 Created on Sept 20 18:07:04 2025
 
-@authors: Andrea Bassi, Politecnico di Milano
+@authors: Andrea Bassi, Yoginder Singh Politecnico di Milano
 """
 
 from ScopeFoundry import Measurement

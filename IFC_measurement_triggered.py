@@ -1,7 +1,7 @@
 """
 Created on Sept 20 18:07:04 2025
 
-@authors: Andrea Bassi, Politecnico di Milano
+@authors: Andrea Bassi, Yoginder Singh Politecnico di Milano
 """
 
 from ScopeFoundry import Measurement
@@ -76,7 +76,7 @@ class IfcMeasureTriggered(Measurement):
         # Convenient reference to the hardware used in the measurement
         
         self.trigger = self.app.hardware['NI_CO_hw']
-        self.settings.New('ni_freq', dtype=float, initial=15.0, vmin=0.1, vmax=30.0, unit='Hz')
+        self.settings.New('ni_freq', dtype=float, initial=15.0, vmin=0.1, vmax=60.0, unit='Hz')
         self.settings.New('ni_duty_cycle', dtype=float, initial=0.015, vmin=0.001, vmax=0.999)
         self.settings.New('ni_initial_delay', dtype=float, initial=0.0, vmin=0.0, unit='s')
 
