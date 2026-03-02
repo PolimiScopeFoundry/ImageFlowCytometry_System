@@ -185,7 +185,7 @@ class IfcMeasureTriggered(Measurement):
                 img = self.im.image8bit #TODO check if contrast is shown properly
 
             if camera_in_use == 0:
-                img = np.flipud(img) # Flip camera A to match the orientation of camera B.
+                img = np.flipud(img) # Flip camera A to match the orientation of camera B
 
             if self.settings.saving_type.val == 'None':
                 self.screen_width = self.ui.screen().size().width()
