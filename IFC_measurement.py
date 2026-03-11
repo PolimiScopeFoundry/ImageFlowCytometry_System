@@ -70,8 +70,8 @@ class IfcMeasure(Measurement):
         self.settings.New('normalization',dtype=int,initial=16, vmin=1)
 
         self.settings.New('current_view', dtype=str, choices=list(VIEWS), initial=list(VIEWS)[0])
-        self.settings.New('intensityA', dtype=int, initial=1, vmin=1, vmax=10)
-        self.settings.New('intensityB', dtype=int, initial=1, vmin=1, vmax=10)
+        self.settings.New('intensityA', dtype=int, initial=1, vmin=1, vmax=100)
+        self.settings.New('intensityB', dtype=int, initial=1, vmin=1, vmax=100)
         
         # Convenient reference to the hardware used in the measurement
         
@@ -169,8 +169,9 @@ class IfcMeasure(Measurement):
             if self.settings['rotate']:   
                 merged_img=merged_img.T
             self.imv.setImage(merged_img,
-                    # autoLevels = self.settings['auto_levels'],
-                    # autoRange = self.settings['auto_range']
+                    autoLevels = self.settings['auto_levels'],
+                    autoRange = self.settings['auto_range'],
+                    levelMode = 'rgba'
                     )
             
         else:
@@ -212,7 +213,7 @@ class IfcMeasure(Measurement):
             self.imv.setImage(img,
                             autoLevels = self.settings['auto_levels'],
                             autoRange = self.settings['auto_range'],
-                            levelMode = 'mono' #TODO:for Merged view, implement RGB
+                            levelMode = 'mono'
                             )
                 
             if self.settings['auto_levels']:

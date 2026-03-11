@@ -29,15 +29,15 @@ class camera_app(BaseMicroscopeApp):
         self.add_hardware(IdsHW(self, name='camB', serial='4108794450'))  # Transmitted 
 
         add_path('NI_ScopeFoundry')
-        from ni_co_hardware import NI_CO_hw
-        self.add_hardware(NI_CO_hw(self))
+        #from ni_co_hardware import NI_CO_hw
+        #self.add_hardware(NI_CO_hw(self))
         
         # Add measurement components
         print("Create Measurement objects")
         from IFC_measurement import IfcMeasure
         self.add_measurement(IfcMeasure(self))
-        from IFC_measurement_triggered import IfcMeasureTriggered
-        self.add_measurement(IfcMeasureTriggered(self))
+        #from IFC_measurement_triggered import IfcMeasureTriggered
+        #self.add_measurement(IfcMeasureTriggered(self))
 
 
 
