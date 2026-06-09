@@ -51,9 +51,9 @@ class IfcMeasureTriggered(Measurement):
         self.settings.New(name='buffer_size',initial= 64, spinbox_step = 1, vmin=1,
                                            dtype=int, ro=False) 
         
-        self.settings.New('xsampling', dtype=float, unit='um', initial=0.5)
-        self.settings.New('ysampling', dtype=float, unit='um', initial=0.5)
-        self.settings.New('zsampling', dtype=float, unit='um', initial=3.0)
+        self.settings.New('xsampling', dtype=float, unit='um', initial=1.0)
+        self.settings.New('ysampling', dtype=float, unit='um', initial=1.0)
+        self.settings.New('zsampling', dtype=float, unit='um', initial=1.0)
     
         self.settings.New('auto_range', dtype=bool, initial=True)
         self.settings.New('auto_levels', dtype=bool, initial=True)
@@ -170,10 +170,12 @@ class IfcMeasureTriggered(Measurement):
                                                 bitdepth=self.cameras[0].camera_device.get_bit_depth()
                                                 )
             if self.settings['rotate']:   
-                merged_img=merged_img.T
+                #merged_img=merged_img.T TODO write a correct transpose with numpy
+                pass 
             self.imv.setImage(merged_img,
-                    # autoLevels = self.settings['auto_levels'],
-                    # autoRange = self.settings['auto_range']
+                    autoLevels = False, # self.settings['auto_levels'],
+                    autoRange = self.settings['auto_range'],
+                    levelMode = 'rgba'
                     )
             
         else:
@@ -435,9 +437,11 @@ class IfcMeasureTriggered(Measurement):
 
             if (frame_idA is not None) and (frame_idB is not None) and (frame_idA != frame_idB):
                 self.log.warning(f"Frame ID mismatch (stack idx {self.frame_index}): camA={frame_idA}, camB={frame_idB}")
-
+            
             self.im.image[0, ...] = imgA
             self.im.image[1, ...] = imgB
+
+            imgA = np.flipud(imgA) # Flip camera A to match the orientation of camera B
 
             images_h5[0][self.frame_index, :, :] = imgA
             images_h5[1][self.frame_index, :, :] = imgB
