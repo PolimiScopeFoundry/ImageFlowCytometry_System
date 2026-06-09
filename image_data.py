@@ -164,12 +164,17 @@ class ImageManager:
         im0 = self.image[channels[0]]
         im1 = self.image[channels[1]]
 
+        sy,sx = im0.shape
+
         norm_factor = (2**(bitdepth)-1) /255
         
         im0_8bit = (im0/norm_factor*enanched[0]).astype('uint8')
         im1_8bit = (im1/norm_factor*enanched[1]).astype('uint8')
         
-        merged_image = cv2.merge((np.flipud(im0_8bit),im1_8bit,im0_8bit)) #merge in violet and green the two channels, red is set to 0. The merged image is in RGB format, but opencv uses BGR format, so the order of the channels is reversed.
-            
+        #merged_image = cv2.merge((np.flipud(im0_8bit),im1_8bit,im0_8bit)) #merge in violet and green the two channels, red is set to 0. The merged image is in RGB format, but opencv uses BGR format, so the order of the channels is reversed.
+        merged_image = np.zeros([sy,sx,3])
+        merged_image[:,:,0] = im0_8bit
+        merged_image[:,:,1] = im1_8bit
+
         return merged_image        
         

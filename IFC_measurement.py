@@ -51,9 +51,9 @@ class IfcMeasure(Measurement):
         self.settings.New(name='buffer_size',initial= 64, spinbox_step = 1, vmin=1,
                                            dtype=int, ro=False) 
         
-        self.settings.New('xsampling', dtype=float, unit='um', initial=0.5)
-        self.settings.New('ysampling', dtype=float, unit='um', initial=0.5)
-        self.settings.New('zsampling', dtype=float, unit='um', initial=3.0)
+        self.settings.New('xsampling', dtype=float, unit='um', initial=0.05)
+        self.settings.New('ysampling', dtype=float, unit='um', initial=0.05)
+        self.settings.New('zsampling', dtype=float, unit='um', initial=1.0)
     
         self.settings.New('auto_range', dtype=bool, initial=True)
         self.settings.New('auto_levels', dtype=bool, initial=True)
@@ -70,8 +70,8 @@ class IfcMeasure(Measurement):
         self.settings.New('normalization',dtype=int,initial=16, vmin=1)
 
         self.settings.New('current_view', dtype=str, choices=list(VIEWS), initial=list(VIEWS)[0])
-        self.settings.New('intensityA', dtype=int, initial=1, vmin=1, vmax=10)
-        self.settings.New('intensityB', dtype=int, initial=1, vmin=1, vmax=10)
+        self.settings.New('intensityA', dtype=float, initial=1.0, vmin=1.0, vmax=10.0)
+        self.settings.New('intensityB', dtype=float, initial=1.0, vmin=1.0, vmax=10.0)
         
         # Convenient reference to the hardware used in the measurement
         
@@ -157,6 +157,11 @@ class IfcMeasure(Measurement):
         im = self.im.copy()
 
         current_view = self.settings['current_view'] # A,B or Merged
+
+        if self.settings.saving_type.val == 'None':
+                self.screen_width = self.ui.screen().size().width()
+                width = int(self.screen_width*self.settings['zoom']/100)
+                self.ui.setFixedWidth(width)
         
         if current_view == 'Merged':
         
@@ -166,11 +171,14 @@ class IfcMeasure(Measurement):
                                                 enanched=[intensityA,intensityB],
                                                 bitdepth=self.cameras[0].camera_device.get_bit_depth()
                                                 )
+            
             if self.settings['rotate']:   
-                merged_img=merged_img.T
+                #merged_img=merged_img.T TODO write a correct transpose with numpy
+                pass 
             self.imv.setImage(merged_img,
-                    # autoLevels = self.settings['auto_levels'],
-                    # autoRange = self.settings['auto_range']
+                    autoLevels = False, # self.settings['auto_levels'],
+                    autoRange = self.settings['auto_range'],
+                    levelMode = 'rgba'
                     )
             
         else:
@@ -181,11 +189,13 @@ class IfcMeasure(Measurement):
             if hasattr(self.im,"image8bit") and self.settings['detect']:
                 img = self.im.image8bit #TODO check if contrast is shown properly
 
+            if camera_in_use == 0:
+                img = np.flipud(img) # Flip camera A to match the orientation of camera B
             if self.settings.saving_type.val == 'None':
                 self.screen_width = self.ui.screen().size().width()
                 width = int(self.screen_width*self.settings['zoom']/100)
                 self.ui.setFixedWidth(width)
-
+            
             for indx, cnt in enumerate(im.contours):
                 cnt = cnt.squeeze()
                 if cnt.ndim == 2 and len(cnt) > 1:
@@ -212,7 +222,7 @@ class IfcMeasure(Measurement):
             self.imv.setImage(img,
                             autoLevels = self.settings['auto_levels'],
                             autoRange = self.settings['auto_range'],
-                            levelMode = 'mono' #TODO:for Merged view, implement RGB
+                            levelMode = 'mono'
                             )
                 
             if self.settings['auto_levels']:
@@ -387,7 +397,7 @@ class IfcMeasure(Measurement):
                                 )
         for camera in self.cameras:
             camera.camera_device.start_acquisition() 
-        
+
         self.frame_index = 0
         while self.frame_index < znum:
             channel_index = 0 
@@ -395,6 +405,8 @@ class IfcMeasure(Measurement):
                 img = self.cameras[channel_index].camera_device.get_frame() 
                 self.cameras[channel_index].camera_device.get_buffer_count()  
                 self.im.image[channel_index,...] = img
+
+                img = np.flipud(img) # Flip camera A to match the orientation of camera B
                 
                 images_h5[channel_index][self.frame_index,:,:] = img
                 self.h5file.flush() # introduces a slight time delay but assures that images are stored continuosly 
